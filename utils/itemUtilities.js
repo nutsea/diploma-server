@@ -112,26 +112,6 @@ const validPropertySimple = (size) => {
     return null
 }
 
-// const replaceValid = value => value
-//     .replace('½', ' 1/2')
-//     .replace('⅔', ' 2/3')
-//     .replace('⅓', ' 1/3')
-//     .replace('¼', ' 1/4')
-//     .replace('¾', ' 3/4')
-//     .replace('6XS', 'XXXXXXS')
-//     .replace('5XS', 'XXXXXS')
-//     .replace('4XS', 'XXXXS')
-//     .replace('3XS', 'XXXS')
-//     .replace('2XS', 'XXS')
-//     .replace('2XL', 'XXL')
-//     .replace('3XL', 'XXXL')
-//     .replace('4XL', 'XXXXL')
-//     .replace('5XL', 'XXXXXL')
-//     .replace('6XL', 'XXXXXXL')
-//     .replace(/\d+\/(XXXXS|XXXS|XXS|XS|S|M|L|XL|XXL|XXXL|XXXXL)/g, (_, size) => size)
-//     .replace(/\d+\/\d+[A-Z]*\((XXXXS|XXXS|XXS|XS|S|M|L|XL|XXL|XXXL|XXXXL)\)/g, (_, size) => size)
-//     .replace(/\bA\/([A-Z0-9]+)/g, '$1')
-
 const replaceValid = value => {
     let result = value
         .replace('½', ' 1/2')
@@ -260,8 +240,6 @@ const getMidPixelColor = async (imageUrl) => {
 }
 
 const isNumericString = (str, category) => {
-    // return /^[0-9]+$/.test(str)
-    // return /^[A-Za-z]+\/[A-Za-z]+(\/[A-Za-z]+)*$/.test(str)
     return (
         /^[A-Za-z]+\/[A-Za-z]+(\/[A-Za-z]+)*$/.test(str) || // Word/Word/Word
         /^\d+(\/\d+)+$/.test(str) || // 123/456/789

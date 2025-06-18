@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize')
 const { v4: uuidv4 } = require('uuid')
 
 const Item = sequelize.define('items', {
-    id: { type: DataTypes.UUID, defaultValue: uuidv4, primaryKey: true, allowNull: false, unique: true },
+    id: { type: DataTypes.UUID, defaultValue: uuidv4, primaryKey: true },
     name: { type: DataTypes.STRING, allowNull: false },
     brand: { type: DataTypes.STRING },
     declension: { type: DataTypes.STRING },
@@ -90,7 +90,6 @@ const Cart = sequelize.define('cart', {
 
 const Order = sequelize.define('orders', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    // основное
     nickname: { type: DataTypes.STRING, defaultValue: '' },
     name: { type: DataTypes.STRING, allowNull: false },
     social_media: { type: DataTypes.STRING },
@@ -99,11 +98,10 @@ const Order = sequelize.define('orders', {
     manager: { type: DataTypes.STRING, defaultValue: '' },
     comment: { type: DataTypes.STRING, defaultValue: '' },
     checked_price: { type: DataTypes.BOOLEAN, defaultValue: false },
-    // логистика
     recipient: { type: DataTypes.STRING, allowNull: false },
     phone: { type: DataTypes.STRING, allowNull: false },
     address: { type: DataTypes.STRING, allowNull: false },
-    ship_type: { type: DataTypes.STRING, defaultValue: 'point' }, // point, home
+    ship_type: { type: DataTypes.STRING, defaultValue: 'point' },
     track: { type: DataTypes.STRING, defaultValue: '' },
     cargo_cost: { type: DataTypes.FLOAT },
     sdek_cost: { type: DataTypes.FLOAT },
@@ -111,7 +109,6 @@ const Order = sequelize.define('orders', {
     sdek_track: { type: DataTypes.STRING, defaultValue: '' },
     delivery_cost: { type: DataTypes.FLOAT, defaultValue: 0 },
     dimensions: { type: DataTypes.STRING, defaultValue: '' },
-    // оплата
     is_split: { type: DataTypes.BOOLEAN, defaultValue: false },
     first_pay: { type: DataTypes.FLOAT, defaultValue: 0 },
     second_pay: { type: DataTypes.FLOAT, defaultValue: 0 },
@@ -119,16 +116,13 @@ const Order = sequelize.define('orders', {
     second_paid: { type: DataTypes.BOOLEAN, defaultValue: false },
     paid: { type: DataTypes.FLOAT, defaultValue: 0 },
     course: { type: DataTypes.FLOAT, allowNull: false },
-    fee: { type: DataTypes.FLOAT, allowNull: false }, // комиссия
+    fee: { type: DataTypes.FLOAT, allowNull: false },
     cost: { type: DataTypes.FLOAT, allowNull: false },
     discount_cost: { type: DataTypes.FLOAT, defaultValue: 0 },
     paid: { type: DataTypes.FLOAT, defaultValue: 0 },
-    // скидка
     discount: { type: DataTypes.INTEGER, defaultValue: 0 },
     promo_code: { type: DataTypes.STRING, defaultValue: '' },
-    // отзыв
     can_review: { type: DataTypes.BOOLEAN, defaultValue: true },
-    // откуда заказ
     from: { type: DataTypes.STRING, defaultValue: 'site' }
 })
 
@@ -153,7 +147,7 @@ const OrderItem = sequelize.define('order_items', {
 const OrderPhoto = sequelize.define('order_photos', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     img: { type: DataTypes.STRING, allowNull: false },
-    type: { type: DataTypes.STRING, allowNull: false, defaultValue: 'buy' }, // buy, stock
+    type: { type: DataTypes.STRING, allowNull: false, defaultValue: 'buy' },
 })
 
 const Promo = sequelize.define('promos', {
@@ -206,18 +200,6 @@ OrderItem.belongsTo(Order, { foreignKey: 'order_id' })
 
 Order.hasMany(OrderPhoto, { foreignKey: 'order_id' })
 OrderPhoto.belongsTo(Order, { foreignKey: 'order_id' })
-
-// Item.hasMany(Photo, { foreignKey: 'item_id' })
-// Photo.belongsTo(Item, { foreignKey: 'item_id' })
-
-// Item.hasMany(Size, { foreignKey: 'item_id' })
-// Size.belongsTo(Item, { foreignKey: 'item_id' })
-
-// Item.hasMany(Fav, { foreignKey: 'item_id' })
-// Fav.belongsTo(Item, { foreignKey: 'item_id' })
-
-// Item.hasMany(Cart, { foreignKey: 'item_id' })
-// Cart.belongsTo(Item, { foreignKey: 'item_id' })
 
 module.exports = {
     Auth,

@@ -4,7 +4,7 @@ const userController = require('../controllers/UserController')
 const authMiddleware = require('../middleware/authMiddleware')
 const adminMiddleware = require('../middleware/adminMiddleware')
 
-router.post('/', adminMiddleware, userController.create)
+router.post('/', userController.create)
 router.get('/', authMiddleware, userController.checkUser)
 router.put('/', authMiddleware, userController.update)
 router.put('/admin', adminMiddleware, userController.updateByAdmin)

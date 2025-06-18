@@ -13,15 +13,9 @@ const cron = require('node-cron')
 const { setPointsList } = require('./controllers/CdekController')
 const os = require('os')
 
-const PORT = os.platform() === 'linux' ? (process.env.PORT_LINUX || 5001) : (process.env.PORT || 5000)
+const PORT = process.env.PORT || 5000
 
 let options
-if (os.platform() === 'linux') {
-    options = {
-        key: fs.readFileSync('/etc/letsencrypt/live/server.kicksie.ru/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/server.kicksie.ru/cert.pem')
-    }
-}
 
 const app = express()
 app.use(cors())
@@ -41,32 +35,7 @@ const start = async () => {
     try {
         await sequelize.authenticate()
         await sequelize.sync()
-
-        if (os.platform() === 'linux') {
-            server.listen(PORT, () => console.log(`Server started on port ${PORT} (Linux)`))
-        } else {
-            app.listen(PORT, () => console.log(`Server started on port ${PORT} (Non-Linux)`))
-        }
-
-        const course = await models.Constants.findOne({ where: { name: 'course' } })
-        if (!course) {
-            await models.Constants.create({ name: 'course', value: 15 })
-        }
-
-        const standartShip = await models.Constants.findOne({ where: { name: 'standartShip' } })
-        if (!standartShip) {
-            await models.Constants.create({ name: 'standartShip', value: 2000 })
-        }
-
-        const expressShip = await models.Constants.findOne({ where: { name: 'expressShip' } })
-        if (!expressShip) {
-            await models.Constants.create({ name: 'expressShip', value: 3500 })
-        }
-
-        const fee = await models.Constants.findOne({ where: { name: 'fee' } })
-        if (!fee) {
-            await models.Constants.create({ name: 'fee', value: 1000 })
-        }
+        app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
     } catch (e) {
         console.log(e)
     }
@@ -76,15 +45,10 @@ start()
 
 // telegram bot
 const { Telegraf, Markup } = require('telegraf')
-const { getFirstPixelColor, getMidPixelColor } = require('./utils/itemUtilities')
 
 let token
 
-if (os.platform() === 'linux') {
-    token = process.env.BOT_TOKEN_LINUX
-} else {
-    token = process.env.BOT_TOKEN
-}
+token = process.env.BOT_TOKEN
 
 const bot = new Telegraf(token)
 
@@ -112,7 +76,7 @@ bot.start(async (ctx) => {
                 checkAuth(auth, ctx)
             }
         } else {
-            await ctx.reply('Привет! С помощью этого бота вы можете авторизоваться на сайте kicksie.ru и получать уведомления о статусе вашего заказа 🙂')
+            await ctx.reply('Привет! С помощью этого бота вы можете авторизоваться на сайте и получать уведомления о статусе вашего заказа 🙂')
         }
     } catch (e) {
         console.log(e)

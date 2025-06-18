@@ -15,36 +15,13 @@ class SizeController {
         }
     }
 
-    // async getAll(req, res, next) {
-    //     try {
-    //         const { size_type, item_category } = req.query
-    //         const sizes = await Size.findAll({
-    //             attributes: ['size'],
-    //             where: {
-    //                 size_type,
-    //                 ...(item_category && { item_category })
-    //             },
-    //             group: ['size'],
-    //             raw: true
-    //         })
-    //         return res.json(sizes)
-    //     } catch (e) {
-    //         console.log(e)
-    //         return next(ApiError.badRequest(e.message))
-    //     }
-    // }
-
     async getAll(req, res, next) {
         try {
-            // const { size_type, item_category } = req.query
             const { brand, size_type, item_category } = req.query
             const whereClause = {
                 size_type,
                 ...(item_category && { item_category }),
                 brand
-                // ...(size_type === 'EU' && {
-                //     brand: { [Op.notILike]: '%adidas%' }
-                // }),
             }
 
             const sizes = await Size.findAll({

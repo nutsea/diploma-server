@@ -5,12 +5,7 @@ const { getPoizonItem, getPoizonIds, getByLink, getSimpleInfo } = require('../se
 const { Sequelize } = require('../db')
 const sequelize = require('../db')
 const os = require('os');
-// const { Telegraf } = require('telegraf')
 const { filterString, filterSize, convertStringToArray, isUUID, formatSkus, validProperty, replaceValid, sortItemsBySize, getFirstPixelColor, isNumericString, allNumericSizes, getMidPixelColor, allNumericSizesSimple, formatSizeKeys } = require('../utils/itemUtilities')
-
-// const token = os.platform() === 'linux' ? (process.env.BOT_TOKEN_LINUX) : (process.env.BOT_TOKEN)
-
-// const bot = new Telegraf(token)
 
 class ItemController {
     async create(req, res, next) {
@@ -87,14 +82,6 @@ class ItemController {
                                     await Photo.create({ img: j.url, item_uid: i.toString(), item_id: isItem.id })
                             }
                         }
-                        // let list = data.sizeDto.sizeInfo.sizeTemplate.list
-                        // for (let j of list) {
-                        //     if (j.sizeKey === '适合脚长') j.sizeKey = 'SM'
-                        //     j.sizeKey = filterString(j.sizeKey)
-                        //     if (!Array.isArray(j.sizeValue)) {
-                        //         j.sizeValue = convertStringToArray(j.sizeValue)
-                        //     }
-                        // }
 
                         let list = formatSizeKeys(data.sizeDto.sizeInfo.sizeTemplate.list)
 
@@ -140,7 +127,6 @@ class ItemController {
                         isItem.max_price = 0
                         for (let j = 0; j < data.skus.length; j++) {
                             if (data.skus[j] && !validProperty(data.skus[j])) {
-                                // console.log('no valid property', data.skus[j])
                                 const sizesToDelete = await Size.findAll({ where: { size: data.skus[j].properties[1].saleProperty.value, item_uid: i.toString() } })
                                 for (let i of sizesToDelete) {
                                     await i.destroy()
@@ -260,14 +246,10 @@ class ItemController {
                             if (!isItem) {
                                 let custom = ''
                                 if (data.detail.structureTitle.includes('【定制球鞋】')) {
-                                    if (filterString(data.detail.structureTitle)[0] === ' ') {
-                                        custom = '[Custom]'
-                                    } else {
-                                        custom = '[Custom] '
-                                    }
+                                    custom = '[Custom] '
                                 }
                                 if (filterString(data.detail.structureTitle).length > 0) {
-                                    isItem = await Item.create({ name: custom + filterString(data.detail.structureTitle), item_uid: i.toString(), category, brand, model, declension, orders: 0, fitId: data.detail.fitId })
+                                    isItem = await Item.create({ name: custom + filterString(data.detail.structureTitle).trim(), item_uid: i.toString(), category, brand, model, declension, orders: 0, fitId: data.detail.fitId })
                                 } else {
                                     isItem = await Item.create({ name: brand + ' ' + model, item_uid: i.toString(), category, brand, model, declension, orders: 0, fitId: data.detail.fitId })
                                 }
@@ -310,12 +292,6 @@ class ItemController {
                                         await Photo.create({ img: j.url, item_uid: i.toString(), item_id: isItem.id })
                                 }
                             }
-                            // let list = data.sizeDto.sizeInfo.sizeTemplate.list
-                            // for (let j of list) {
-                            //     if (j.sizeKey === '适合脚长') j.sizeKey = 'SM'
-                            //     j.sizeKey = filterString(j.sizeKey)
-                            //     j.sizeValue = convertStringToArray(j.sizeValue)
-                            // }
 
                             let list = formatSizeKeys(data.sizeDto.sizeInfo.sizeTemplate.list)
                             console.log('list', list)
@@ -365,8 +341,6 @@ class ItemController {
                                         await i.destroy()
                                     }
                                 }
-                                // console.log(11111, validProperty(data.skus[j]))
-                                // console.log(11111, validProperty(data.skus[j]), isNumericString(replaceValid(validProperty(data.skus[j])), category))
                                 if (data.skus[j] && validProperty(data.skus[j]) && !isNumericString(replaceValid(validProperty(data.skus[j])), category)) {
                                     const { clientPrice, price_0, price_2, price_3, price_12, delivery_0, delivery_2, delivery_3, delivery_12 } = formatSkus(data.skus[j])
                                     if ((!isItem.min_price || isItem.min_price === null || isItem.min_price > clientPrice) && clientPrice) {
@@ -405,10 +379,8 @@ class ItemController {
                                                 const isSize = await Size.findOne({ where: { size, size_type: k.sizeKey, size_default: sizeDef, item_uid: i.toString() } })
                                                 if (!isSize && clientPrice) {
                                                     await Size.create({ size, price: clientPrice, price_0, price_2, price_3, price_12, delivery_0, delivery_2, delivery_3, delivery_12, item_uid: i.toString(), size_type: k.sizeKey, size_default: sizeDef, item_category: category, brand: isItem.brand })
-                                                    console.log(111, size)
                                                     if (list[0].sizeKey !== 'EU' && k.sizeKey === 'FR') {
                                                         await Size.create({ size, price: clientPrice, price_0, price_2, price_3, price_12, delivery_0, delivery_2, delivery_3, delivery_12, item_uid: i.toString(), size_type: 'EU', size_default: sizeDef, item_category: category, brand: isItem.brand })
-                                                        console.log(222, size)
                                                     }
                                                 }
                                             }
@@ -418,10 +390,8 @@ class ItemController {
                                             const sizeDef = replaceValid(defaultSize)
                                             if (list[0] && list[0].sizeKey !== 'EU') {
                                                 await Size.create({ size: sizeDef, price: clientPrice, price_0, price_2, price_3, price_12, delivery_0, delivery_2, delivery_3, delivery_12, item_uid: i.toString(), size_type: 'EU', size_default: sizeDef, item_category: category, brand: isItem.brand })
-                                                console.log(333, sizeDef)
                                             } else {
                                                 list[0] && await Size.create({ size: sizeDef, price: clientPrice, price_0, price_2, price_3, price_12, delivery_0, delivery_2, delivery_3, delivery_12, item_uid: i.toString(), size_type: list[0].sizeKey, size_default: sizeDef, item_category: category, brand: isItem.brand })
-                                                console.log(444, sizeDef)
                                             }
                                             const defaultTemplate = list[0].sizeValue
                                             const defaultIndex = defaultTemplate.findIndex(item => item === defaultSize)
@@ -429,7 +399,6 @@ class ItemController {
                                                 if (k.sizeValue[defaultIndex] && (k.sizeValue[defaultIndex] !== defaultSize || k.sizeKey === 'FR') && k.sizeKey && (category === 'clothes' ? k.sizeKey !== 'EU' : true)) {
                                                     const size = replaceValid(k.sizeValue[defaultIndex])
                                                     await Size.create({ size, price: clientPrice, price_0, price_2, price_3, price_12, delivery_0, delivery_2, delivery_3, delivery_12, item_uid: i.toString(), size_type: k.sizeKey, size_default: sizeDef, item_category: category, brand: isItem.brand })
-                                                    console.log(555, size, k.sizeKey)
                                                 }
                                             }
                                         }
@@ -518,6 +487,7 @@ class ItemController {
         try {
             const { keyword, limit, page, timeElapsed } = req.query
             let ids = await getPoizonIds(keyword, limit, page, timeElapsed)
+            console.log(ids)
             for (let i of ids.productList) {
                 const isExist = await Item.findOne({ where: { item_uid: i.spuId.toString() } })
                 if (isExist) i.isExist = true
@@ -533,6 +503,15 @@ class ItemController {
                 }
             }
             return res.json(ids)
+        } catch (e) {
+            console.log(e)
+            return next(ApiError.badRequest(e.message))
+        }
+    }
+
+    async checkCostPlug(req, res, next) {
+        try {
+            return res.json()
         } catch (e) {
             console.log(e)
             return next(ApiError.badRequest(e.message))
@@ -556,14 +535,6 @@ class ItemController {
                 const category = item.dataValues.category
                 try {
                     await getPoizonItem(i, timeElapsed).then(async data => {
-                        /////////////////////////////////////////////////////////////
-                        // let data = data2
-                        // data.skus = data.skus.filter(sku => {
-                        //     sku.properties.forEach(prop => {
-                        //         prop.saleProperty.value = 123
-                        //     })
-                        // })
-                        /////////////////////////////////////////////////////////////
                         item.img = data.image.spuImage.images[0].url
                         item.fitId = data.detail.fitId
                         await item.save()
@@ -585,17 +556,6 @@ class ItemController {
                                     await Photo.create({ img: j.url, item_uid: i.toString(), item_id: item.id })
                             }
                         }
-                        // let list = data.sizeDto.sizeInfo.sizeTemplate.list
-                        // for (let j of list) {
-                        //     if (j.sizeKey === '适合脚长') j.sizeKey = 'SM'
-                        //     j.sizeKey = filterString(j.sizeKey)
-                        //     j.sizeValue = convertStringToArray(j.sizeValue)
-                        //     ///////////////////////
-                        //     // j.sizeValue[0] = 'S Tall'
-                        //     // j.sizeValue[1] = 'XS Tall'
-                        //     // j.sizeValue = [12, 13, 14, 15, 16, 17, 18, 19, 20]
-                        //     ///////////////////////
-                        // }
 
                         let list = formatSizeKeys(data.sizeDto.sizeInfo.sizeTemplate.list)
 
@@ -1406,16 +1366,6 @@ class ItemController {
                 await item.save()
                 console.log(`Cleared photos for item ${i}`)
             }
-
-            // const photos = await Photo.findAll({ where: { item_uid: { [Op.in]: shoesIds } } })
-            // for (let i of photos) {
-            //     const pixel = await getFirstPixelColor(i.img)
-            //     const pixel2 = await getMidPixelColor(i.img)
-            //     if (((pixel.r < 250 || pixel.g < 250 || pixel.b < 250) && pixel.a === 1) && ((pixel2.r < 250 || pixel2.g < 250 || pixel2.b < 250) && pixel2.a === 1)) {
-            //         i.dataValues.color = pixel
-            //         await i.destroy()
-            //     }
-            // }
 
             const shoesAmount = await Item.count({ where: { category: 'shoes' } })
             const shoesCleared = await Item.count({ where: { category: 'shoes', photos_cleared: true } })

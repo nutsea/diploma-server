@@ -48,7 +48,6 @@ class AuthController {
                 return next(ApiError.badRequest())
             }
         } catch (e) {
-            // console.log(e)
             return next(ApiError.badRequest(e))
         }
     }
@@ -63,11 +62,9 @@ class AuthController {
                 const token = generateJwt(user.id, user.chat_id, user.role)
                 return res.json({ token, user })
             } else {
-                // console.log('Error: Auth not found')
                 return next(ApiError.badRequest())
             }
         } catch (e) {
-            // console.log(e)
             return next(ApiError.badRequest(e))
         }
     }

@@ -18,11 +18,11 @@ const getPoizonItem = async (spuId, timeElapsed) => {
 const getPoizonIds = async (keyword, limit, page, timeElapsed) => {
     try {
         if (timeElapsed) {
-            const { data } = await $authPoizonHost.get('searchProducts/v2', { params: { keyword, limit, page }, headers: { timeElapsed } })
+            const { data } = await $authPoizonHost.get('searchProducts', { params: { keyword, limit, page }, headers: { timeElapsed } })
             console.log(data.productList.length)
             return data
         } else {
-            const { data } = await $authPoizonHost.get('searchProducts/v2', { params: { keyword, limit, page } })
+            const { data } = await $authPoizonHost.get('searchProducts', { params: { keyword, limit, page } })
             console.log(data.productList.length)
             return data
         }

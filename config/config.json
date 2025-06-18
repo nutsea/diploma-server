@@ -1,21 +1,21 @@
 {
   "development": {
-    "username": "kicksie",
-    "password": "kXkSqgGQjs",
+    "username": "postgres",
+    "password": "postgres",
     "database": "poizon",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
-    "username": "kicksie",
-    "password": "kXkSqgGQjs",
+    "username": "postgres",
+    "password": "postgres",
     "database": "poizon",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
-    "username": "kicksie",
-    "password": "kXkSqgGQjs",
+    "username": "postgres",
+    "password": "postgres",
     "database": "poizon",
     "host": "127.0.0.1",
     "dialect": "postgres"

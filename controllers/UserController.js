@@ -42,7 +42,6 @@ class UserController {
             const { name, surname, phone } = req.body
             const user = await User.findOne({ where: { id: req.user.id } })
             if (name) user.name = name
-            // else user.name = ''
             if (surname) user.surname = surname
             else user.surname = ''
             if (phone && phone.length === 11) user.phone = phone
@@ -228,9 +227,6 @@ class UserController {
                 if (oldUser.client) {
                     i.name = oldUser.client
                 }
-                // if (oldUser.surname) {
-                //     i.name += ' ' + oldUser.surname
-                // }
                 if (i.name.length === 0) {
                     i.name === newUser.link
                 }

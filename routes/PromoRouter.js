@@ -3,7 +3,6 @@ const router = new Router()
 const promoController = require('../controllers/PromoController')
 const adminMiddleware = require('../middleware/adminMiddleware')
 
-// router.post('/', adminMiddleware, promoController.create)
 router.post('/', promoController.create)
 router.get('/', adminMiddleware, promoController.getAll)
 router.get('/one', adminMiddleware, promoController.getOne)
